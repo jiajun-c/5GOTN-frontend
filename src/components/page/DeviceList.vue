@@ -7,21 +7,27 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <P>
-                    网元id：
-                    <el-input v-model="search_id" placeholder="请输入网元id" class="handle-input"></el-input>
-                    <el-button type="primary" icon="search" @click="search()">搜索</el-button>
-                </p>
-                <p>
-                    <br>
-                </p>
-                <p>
-                    <template>
-                        <el-button type="primary" icon="read" class="handle-read" @click="getData">导入数据</el-button>
-                        <el-button type="primary" icon="delete" class="handle-del" @click="handleDeleteALL">批量删除</el-button>
-                        <el-button type="primary" icon="add" class="handle-add" @click="handleAdd">添加网元</el-button>
-                    </template>
-                </p>
+                <el-form :inline="true" :model="select" class="demo-form-inline">
+                    <el-col :span="11"> 
+                        <el-form-item label="设备id">  
+                            <el-input v-model="select.id" placeholder="请输入设备id" class="handle-input"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item>
+                            <el-button type="primary" icon="search" @click="search()">搜索</el-button>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="24"> 
+                        <el-form-item>
+                            <template>
+                                <el-button type="primary" icon="read" class="handle-read" @click="getData">导入设备</el-button>
+                                <el-button type="primary" icon="delete" class="handle-del" @click="handleDeleteALL">批量删除</el-button>
+                                <el-button type="primary" icon="add" class="handle-add" @click="handleAdd">添加设备</el-button>
+                            </template>
+                        </el-form-item>
+                    </el-col>
+                </el-form>
             </div>
             <el-table :data="tableData" border style="width:100%"
                 class="table" 
@@ -32,11 +38,11 @@
                 @selection-change="handleSelectionChange">
                 <!-- :default-sort = "{prop: 'num', order: 'ascending'}"> -->
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column label="序号" prop="num" type="integer" width="100">
+                <el-table-column label="序号" prop="num" type="integer" align="center" width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="device_id" label="网元id" type="integer" width="200">
+                <el-table-column prop="device_id" label="设备id" align="center" type="integer" width="200" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="device_address" label="所属厂区" show-overflow-tooltip>
+                <el-table-column prop="device_address" align="center" label="所属厂区" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
@@ -70,12 +76,12 @@
         </div>
 
         <!-- 添加弹出框 -->
-        <el-dialog title="编辑" :visible.sync="addVisible" width="40%">
+        <el-dialog title="添加" :visible.sync="addVisible" width="40%">
             <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                 <!-- <el-form-item label="序号">
                     <el-input v-model="form.num" type="integer"></el-input>
                 </el-form-item> -->
-                <el-form-item label="网元id">
+                <el-form-item label="设备id">
                     <el-input v-model="form.device_id" type="integer"></el-input>
                 </el-form-item>
                 <el-form-item label="所属厂区">
@@ -94,8 +100,8 @@
                 <!-- <el-form-item label="序号">
                     <el-input v-model="form.num" type="integer"></el-input>
                 </el-form-item> -->
-                <el-form-item label="网元id">
-                    <el-input v-model="form.device_id" type="integer"></el-input>
+                <el-form-item label="设备id">
+                    <el-input v-model="form.device_id" :disabled="true" type="integer"></el-input>
                 </el-form-item>
                 <el-form-item label="所属厂区">
                     <el-input v-model="form.device_address"></el-input>
@@ -109,15 +115,15 @@
         </el-dialog>
         
         <!-- 搜索弹出框 -->
-        <el-dialog title="搜索结果" :visible.sync="searchVisible" width="60%">
+        <el-dialog title="搜索结果" :visible.sync="searchVisible" width="50%">
             <el-table :data="searchRes">
-                <el-table-column label="页号" prop="page_idx" type="integer" width="100">
+                <!-- <el-table-column label="页号" prop="page_idx" type="integer" width="100">
                 </el-table-column>
                 <el-table-column label="序号" prop="num" type="integer" width="100">
+                </el-table-column> -->
+                <el-table-column prop="device_id" align="center" label="设备id" type="integer">
                 </el-table-column>
-                <el-table-column prop="device_id" label="网元id" type="integer" width="200">
-                </el-table-column>
-                <el-table-column prop="device_address" label="所属厂区">
+                <el-table-column prop="device_address" align="center" label="所属厂区">
                 </el-table-column>
             </el-table>
         </el-dialog>
@@ -147,53 +153,20 @@
         name: 'DeviceList',
         data() {
             return {
-                url: '/public/vuetable.json',
-                allData: [
-                {
-                    num:'1',
-                    device_id:'22',
-                    device_address:'撒大大'
-                    },
-                    {
-                    num:'3',
-                    device_id:'33',
-                    device_address:'所属'
-                    },
-                    {
-                    num:'2',
-                    device_id:'11',
-                    device_address:'达到'
-                    },
-                    {
-                    num:'5',
-                    device_id:'55',
-                    device_address:'所属撒旦'
-                    },
-                    {
-                    num:'4',
-                    device_id:'44',
-                    device_address:'撒旦萨达撒'
-                    },
-                    {
-                    num:'7',
-                    device_id:'77',
-                    device_address:'撒旦撒旦所属'
-                    },
-                    {
-                    num:'6',
-                    device_id:'66',
-                    device_address:'撒大苏打大苏打是的'
-                    }
-                ],
-                tableData: [
-                ],
+                get_url: 'http://core.azw.net.cn:28080/equip/all',
+                search_url: 'http://core.azw.net.cn:28080/equip/one',
+                update_url: 'http://core.azw.net.cn:28080/equip/update',
+                insert_url: 'http://core.azw.net.cn:28080/equip/insert',
+                delete_url: 'http://core.azw.net.cn:28080/equip/delete',
+                allData: [],
+                tableData: [],
                 cur_page: 1,
                 page_size: 10,
                 multipleSelection: [],
-                select_cate: '',
-                select_word: '',
-                search_id: '',
-                select_address: '',
+                select: {
+                    id: '',
+                    address: ''
+                },
                 del_list: [],
                 is_search: false,
                 editVisible: false,
@@ -208,7 +181,7 @@
                 },
                 rules: {//还没搞明白怎么限制
                     device_id: [
-                        { required: true, message: '请输入网元id', trigger: 'blur' },
+                        { required: true, message: '请输入设备id', trigger: 'blur' },
                         { type: 'number', message: '设备id必须为数字', trigger: 'blur' }
                     ],
                     device_address: [
@@ -222,11 +195,7 @@
             }
         },
         created() {
-            // console.log("page",this.cur_page);
-            // console.log("pagesize",this.page_size);
             this.getData();
-            this.getpageData();
-            // console.log("tableData",this.tableData);
         },
         computed: {
             data() {
@@ -239,9 +208,9 @@
                         }
                     }
                     if (!is_del) {//删除列表没找到需要的表项
-                        if (d.address.indexOf(this.search_id) > -1 &&
-                            (d.name.indexOf(this.select_address) > -1 ||
-                                d.address.indexOf(this.select_address) > -1)
+                        if (d.address.indexOf(this.select.id) > -1 &&
+                            (d.name.indexOf(this.select.address) > -1 ||
+                                d.address.indexOf(this.select.address) > -1)
                         ) {
                             return d;
                         }
@@ -250,6 +219,26 @@
             }
         },
         methods: {
+            getData() {
+                console.log("tabledata:",this.allData);
+                this.$axios.get(this.get_url).then((res) => {
+                    console.log("res.data",res.data);
+                    console.log("res_len",res.data.length);
+                    let length = res.data.length;
+                    for(let i = 0;i < length; i++){
+                        this.form = {
+                            num: i + 1,
+                            device_id: res.data[i].id,
+                            device_address: res.data[i].name
+                        }
+                        this.allData.push(this.form);
+                    }
+                    // this.sortData();
+                    console.log("alldata:",this.allData);
+                    console.log("getData successfully");
+                    this.getpageData();
+                })
+            },
             // 分页导航
             handleSizeChange(val){
                 this.page_size = val;
@@ -276,6 +265,7 @@
                 for(let i = 0;i < this.tableData.length; i++){
                     this.tableData[i].num = (this.cur_page - 1) * this.page_size + i + 1;
                 }
+                console.log("tabledata",this.tableData);
             },
             sortData(){
                 for(let i = 0;i < this.allData.length; i++){
@@ -283,37 +273,24 @@
                     this.allData[i].num = i + 1;
                 }
             },
-            // 获取 easy-mock 的模拟数据
-            getData() {
-                // 开发环境使用 easy-mock 数据，正式环境使用 json 文件
-                // if (process.env.NODE_ENV === 'development') {
-                //     this.url = '/ms/table/list';
-                // };
-                // this.$axios.post(this.url).then((res) => {
-                //     this.allData = res.data.list;
-                //     console.log("tabledata:",this.allData);
-                // })
-                // this.sortData();
-                console.log("getData successfully");
-            },
             search() {
-                // console.log("search_id",this.search_id);
-                this.searchRes.splice(0,this.searchRes.length);
-                if(this.search_id){
-                    let tmp = {
-                        page_idx: '',
-                        num: '',
-                        device_id: '',
-                        device_address: ''
-                    };
-                    tmp = (this.allData.find((item)=>{
-                        if(item.device_id.indexOf(this.search_id) > -1) return item;}))
-                    if(tmp){
-                        tmp.page_idx = Math.ceil(tmp.num / this.page_size);
-                        this.searchRes.push(tmp);
-                    }
-                    console.log("Res",this.searchRes);
-                    this.search_id = '';
+                console.log("select.id",this.select.id);
+                var searchid = Number(this.select.id);
+                console.log("select.id",searchid);
+                this.searchRes.splice(0,this.searchRes.length); //清空原结果
+                if(this.select.id){
+                    var url = this.search_url;
+                    url += `?id=${searchid}`
+                    this.$axios.get(url).then((res) => {
+                        console.log("res",res);
+                        let tmp = {
+                            device_id: res.data.id,
+                            device_address: res.data.name
+                        };
+                        if(tmp.device_address) this.searchRes.push(tmp);
+                        console.log("Res",this.searchRes);
+                    })
+                    this.select.id = '';
                     this.searchVisible = true;
                 }
                 else{
@@ -325,14 +302,14 @@
                     num: '',
                     device_id: '',
                     device_address: ''
-                }
+                };
                 this.addVisible = true;
             },
             handleEdit(row) {
                 this.row = row;
-                this.idx = this.tableData.indexOf(this.row);
+                this.idx = this.allData.indexOf(this.row);
                 // console.log("row",this.idx);
-                const item = this.tableData[this.idx];
+                const item = this.allData[this.idx];
                 // console.log("item",item);
                 this.form = {
                     num: item.num,
@@ -344,6 +321,13 @@
             },
             handleDelete(row) {
                 this.row = row;
+                this.idx = this.allData.indexOf(this.row);const item = this.allData[this.idx];
+                // console.log("item",item);
+                this.form = {
+                    num: item.num,
+                    device_id: item.device_id,
+                    device_address: item.device_address
+                }
                 this.delVisible = true;
             },
             handleDeleteALL() {
@@ -356,6 +340,14 @@
                 this.del_list = this.del_list.concat(this.multipleSelection);
                 for (let i = 0; i < length; i++) {
                     this.allData = this.allData.filter((item) => item.device_id !== this.multipleSelection[i].device_id);
+                    var delete_id = Number(this.multipleSelection[i].device_id);
+                    console.log("delete_id",delete_id);
+                    var url = this.delete_url;
+                    url += `?id=${delete_id}`
+                    console.log("url",url);
+                    this.$axios.post(url).then((res) => {
+                            console.log("res",res);
+                        })
                 }
                 this.getpageData();
                 if(this.tableData.length == 0){
@@ -371,29 +363,72 @@
             },
             // 保存编辑
             saveEdit() {
-                this.$set(this.tableData, this.idx, this.form);
-                // console.log("forms",this.form);
-                this.editVisible = false;
-                this.$message.success(`修改成功`);
+                if(this.form.device_id !=''
+                    && this.form.device_address !=''){
+                    this.$set(this.allData, this.idx, this.form);//前端修改
+                    this.getpageData();
+
+                    let formdata = new FormData();//后端修改
+                    formdata.append("id", this.form.device_id);
+                    formdata.append("name", this.form.device_address);
+                    this.$axios.post(this.update_url,formdata).then((res) => {
+                        console.log("res",res);
+                    })
+                    this.editVisible = false;
+                    this.$message.success(`修改成功`);
+                }
+                this.form = {
+                    num: '',
+                    device_id: '',
+                    device_address: ''
+                };
             },
             saveAdd() {
-                this.form.num = this.allData.length + 1;
-                this.allData.push(this.form);
-                this.getpageData();
-                // console.log("forms",this.form);
-                this.addVisible = false;
-                this.$message.success(`添加成功`);
+                if(this.form.device_id !='' 
+                    && this.form.device_address !=''){
+                    this.form.num = this.allData.length + 1;
+                    this.allData.push(this.form);//前端插入
+
+                    let formdata = new FormData();//后端插入
+                    formdata.append("id", this.form.device_id);
+                    formdata.append("name", this.form.device_address);
+                    this.$axios.post(this.insert_url,formdata).then((res) => {
+                        console.log("res",res);
+                    })
+                    this.getpageData();
+                    // console.log("forms",this.form);
+                    this.addVisible = false;
+                    this.$message.success(`添加成功`);
+                }
+                this.form = {
+                    num: '',
+                    device_id: '',
+                    device_address: ''
+                };
             },
             // 确定删除
             deleteRow(){
                 this.allData = this.allData.filter((item) => item.device_id !== this.row.device_id);
-                this.getpageData();
-                if(this.tableData.length == 0){
-                    this.cur_page--;
-                    this.getpageData();
-                }
-                this.delVisible = false;
-                this.$message.error(`删除成功`);
+                var delete_id = Number(this.form.device_id);
+                console.log("delete_id",delete_id);
+                var url = this.delete_url;
+                url += `?id=${delete_id}`
+                console.log("url",url);
+                this.$axios.post(url).then((res) => {
+                        console.log("res",res);
+                        this.getpageData();
+                        if(this.tableData.length == 0){
+                            this.cur_page--;
+                            this.getpageData();
+                        }
+                        this.delVisible = false;
+                        this.$message.error(`删除成功`);
+                    })
+                this.form = {
+                    num: '',
+                    device_id: '',
+                    device_address: ''
+                };
             }
         }
     }

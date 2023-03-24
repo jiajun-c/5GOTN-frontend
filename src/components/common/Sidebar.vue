@@ -55,7 +55,7 @@
                         ]
                     },
                     {
-                        icon: 'el-icon-lx-warn',
+                        icon: 'el-icon-lx-calendar',
                         index: 'data',
                         title: '告警数据',
                         subs:[

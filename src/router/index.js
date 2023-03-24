@@ -31,7 +31,7 @@ export default new Router({
                 },
                 {
                     path: '/datatable',
-                    component: resolve => require(['../components/page/BaseTable.vue'], resolve),
+                    component: resolve => require(['../components/page/DataTable.vue'], resolve),
                     meta: { title: '数据列表' }
                 },
                 {

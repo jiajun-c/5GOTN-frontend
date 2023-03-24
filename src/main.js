@@ -37,6 +37,7 @@ router.beforeEach((to, from, next) => {
 
 
 new Vue({
+    axios,
     router,
     render: h => h(App)
 }).$mount('#app')
