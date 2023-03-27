@@ -8,12 +8,12 @@
         <div class="container">
             <div class="handle-box">
                 <el-form :inline="true" :model="select" class="demo-form-inline">
-                    <el-col :span="11"> 
+                    <el-col :span="24"> 
                         <el-form-item label="设备id">  
                             <el-input v-model="select.id" placeholder="请输入设备id" class="handle-input"></el-input>
                         </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
+                    <!-- </el-col> -->
+                    <!-- <el-col :span="10"> -->
                         <el-form-item>
                             <el-button type="primary" icon="search" @click="search()">搜索</el-button>
                         </el-form-item>
@@ -21,7 +21,7 @@
                     <el-col :span="24"> 
                         <el-form-item>
                             <template>
-                                <el-button type="primary" icon="read" class="handle-read" @click="getData">导入设备</el-button>
+                                <el-button type="primary" icon="read" class="handle-read" @click="storeData">导出设备</el-button>
                                 <el-button type="primary" icon="delete" class="handle-del" @click="handleDeleteALL">批量删除</el-button>
                                 <el-button type="primary" icon="add" class="handle-add" @click="handleAdd">添加设备</el-button>
                             </template>
@@ -52,6 +52,8 @@
                 </el-table-column>
             </el-table>
             
+
+            <!-- 分页管理 -->
             <div class="pagination">
                 <el-pagination
                 background
@@ -64,15 +66,6 @@
                 :total="allData.length">
                 </el-pagination>
             </div>
-
-            <!-- 分页管理 -->
-            <!-- <div class="pagination">
-                <el-pagination background @current-change="handleCurrentChange" 
-                    layout="prev, pager, next" 
-                    :pager-count="10"
-                    :total="this.page_num">
-                </el-pagination>
-            </div> -->
         </div>
 
         <!-- 添加弹出框 -->
@@ -153,11 +146,11 @@
         name: 'DeviceList',
         data() {
             return {
-                get_url: 'http://core.azw.net.cn:28080/equip/all',
-                search_url: 'http://core.azw.net.cn:28080/equip/one',
-                update_url: 'http://core.azw.net.cn:28080/equip/update',
-                insert_url: 'http://core.azw.net.cn:28080/equip/insert',
-                delete_url: 'http://core.azw.net.cn:28080/equip/delete',
+                get_url: 'admin/equip/all',
+                search_url: 'admin/equip/one',
+                update_url: 'admin/equip/update',
+                insert_url: 'admin/equip/insert',
+                delete_url: 'admin/equip/delete',
                 allData: [],
                 tableData: [],
                 cur_page: 1,
@@ -197,37 +190,37 @@
         created() {
             this.getData();
         },
-        computed: {
-            data() {
-                return this.tableData.filter((d) => {
-                    let is_del = false;
-                    for (let i = 0; i < this.del_list.length; i++) {//在删除的列表中寻找表项
-                        if (d.device_id === this.del_list[i].device_id) {
-                            is_del = true;
-                            break;
-                        }
-                    }
-                    if (!is_del) {//删除列表没找到需要的表项
-                        if (d.address.indexOf(this.select.id) > -1 &&
-                            (d.name.indexOf(this.select.address) > -1 ||
-                                d.address.indexOf(this.select.address) > -1)
-                        ) {
-                            return d;
-                        }
-                    }
-                })
-            }
-        },
+        // computed: {
+        //     data() {
+        //         return this.tableData.filter((d) => {
+        //             let is_del = false;
+        //             for (let i = 0; i < this.del_list.length; i++) {//在删除的列表中寻找表项
+        //                 if (d.device_id === this.del_list[i].device_id) {
+        //                     is_del = true;
+        //                     break;
+        //                 }
+        //             }
+        //             if (!is_del) {//删除列表没找到需要的表项
+        //                 if (d.address.indexOf(this.select.id) > -1 &&
+        //                     (d.name.indexOf(this.select_address) > -1 ||
+        //                         d.address.indexOf(this.select_address) > -1)
+        //                 ) {
+        //                     return d;
+        //                 }
+        //             }
+        //         })
+        //     }
+        // },
         methods: {
             getData() {
-                console.log("tabledata:",this.allData);
+                // console.log("tabledata:",this.allData);
                 this.$axios.get(this.get_url).then((res) => {
                     console.log("res.data",res.data);
                     console.log("res_len",res.data.length);
                     let length = res.data.length;
-                    for(let i = 0;i < length; i++){
+                    for(let i = 0; i < length; i++){
                         this.form = {
-                            num: i + 1,
+                            // num: i + 1,
                             device_id: res.data[i].id,
                             device_address: res.data[i].name
                         }
@@ -237,7 +230,15 @@
                     console.log("alldata:",this.allData);
                     console.log("getData successfully");
                     this.getpageData();
-                })
+                }).catch(error=>{
+                            console.log("error",error);
+                            alert("服务器异常");
+                        });
+            },
+            storeData(){
+                const data = JSON.stringify(this.allData); // 将数据转为 JSON 格式
+                const blob = new Blob([data], { type: 'application/json' }); // 创建一个 Blob 对象
+                saveAs(blob, 'device.json'); // 使用 file-saver 库将 Blob 对象保存为文件
             },
             // 分页导航
             handleSizeChange(val){
@@ -249,7 +250,6 @@
                 // console.log("allData",this.allData);
                 this.cur_page = val;
                 this.getpageData();
-                
             },
             getpageData(){
                 // this.sortData();
@@ -289,7 +289,10 @@
                         };
                         if(tmp.device_address) this.searchRes.push(tmp);
                         console.log("Res",this.searchRes);
-                    })
+                    }).catch(error=>{
+                            console.log("error",error);
+                            alert("服务器异常");
+                        });
                     this.select.id = '';
                     this.searchVisible = true;
                 }
@@ -339,15 +342,18 @@
                 const length = this.multipleSelection.length;
                 this.del_list = this.del_list.concat(this.multipleSelection);
                 for (let i = 0; i < length; i++) {
-                    this.allData = this.allData.filter((item) => item.device_id !== this.multipleSelection[i].device_id);
                     var delete_id = Number(this.multipleSelection[i].device_id);
-                    console.log("delete_id",delete_id);
+                    // console.log("delete_id",delete_id);
                     var url = this.delete_url;
                     url += `?id=${delete_id}`
-                    console.log("url",url);
-                    this.$axios.post(url).then((res) => {
+                    // console.log("url",url);
+                    this.$axios.post(url).then((res) => {//后端删除
+                            this.allData = this.allData.filter((item) => item.device_id !== this.multipleSelection[i].device_id);//前端删除
                             console.log("res",res);
-                        })
+                        }).catch(error=>{
+                            console.log("error",error);
+                            alert("删除异常");
+                        });
                 }
                 this.getpageData();
                 if(this.tableData.length == 0){
@@ -366,17 +372,21 @@
                 if(this.form.device_id !=''
                     && this.form.device_address !=''){
                     this.$set(this.allData, this.idx, this.form);//前端修改
-                    this.getpageData();
 
                     let formdata = new FormData();//后端修改
                     formdata.append("id", this.form.device_id);
                     formdata.append("name", this.form.device_address);
                     this.$axios.post(this.update_url,formdata).then((res) => {
                         console.log("res",res);
-                    })
-                    this.editVisible = false;
-                    this.$message.success(`修改成功`);
+                        this.getpageData();
+                        this.editVisible = false;
+                        this.$message.success(`修改成功`);
+                    }).catch(error=>{
+                            console.log("error",error);
+                            alert("修改异常");
+                        });
                 }
+                this.multipleSelection = [];
                 this.form = {
                     num: '',
                     device_id: '',
@@ -386,7 +396,7 @@
             saveAdd() {
                 if(this.form.device_id !='' 
                     && this.form.device_address !=''){
-                    this.form.num = this.allData.length + 1;
+                    // this.form.num = this.allData.length + 1;
                     this.allData.push(this.form);//前端插入
 
                     let formdata = new FormData();//后端插入
@@ -394,12 +404,16 @@
                     formdata.append("name", this.form.device_address);
                     this.$axios.post(this.insert_url,formdata).then((res) => {
                         console.log("res",res);
-                    })
-                    this.getpageData();
-                    // console.log("forms",this.form);
-                    this.addVisible = false;
-                    this.$message.success(`添加成功`);
+                        this.getpageData();
+                        // console.log("forms",this.form);
+                        this.addVisible = false;
+                        this.$message.success(`添加成功`);
+                    }).catch(error=>{
+                            console.log("error",error);
+                            alert("插入异常");
+                        });
                 }
+                this.multipleSelection = [];
                 this.form = {
                     num: '',
                     device_id: '',
@@ -408,13 +422,13 @@
             },
             // 确定删除
             deleteRow(){
-                this.allData = this.allData.filter((item) => item.device_id !== this.row.device_id);
                 var delete_id = Number(this.form.device_id);
                 console.log("delete_id",delete_id);
                 var url = this.delete_url;
                 url += `?id=${delete_id}`
                 console.log("url",url);
-                this.$axios.post(url).then((res) => {
+                this.$axios.post(url).then((res) => {//后端删除
+                        this.allData = this.allData.filter((item) => item.device_id !== this.row.device_id);//前端删除
                         console.log("res",res);
                         this.getpageData();
                         if(this.tableData.length == 0){
@@ -423,7 +437,11 @@
                         }
                         this.delVisible = false;
                         this.$message.error(`删除成功`);
-                    })
+                    }).catch(error=>{
+                            console.log("error",error);
+                            alert("删除异常");
+                        });
+                this.multipleSelection = [];
                 this.form = {
                     num: '',
                     device_id: '',

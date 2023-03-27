@@ -8,22 +8,22 @@
         <div class="container">
             <div class="handle-box">
                 <el-form :inline="true" :model="select" class="demo-form-inline">
-                    <el-col :span="8"> 
+                    <el-col :span="24"> 
                         <el-form-item label="设备id">                       
                                 <el-input maxlength="40px" v-model="select.id" placeholder="请输入设备id" class="handle-input-id"></el-input>
                         </el-form-item>
-                    </el-col>
-                    <el-col :span="8">
+                    <!-- </el-col>
+                    <el-col :span="8"> -->
                         <el-form-item label="所属厂区">
                             <el-input  v-model="select.address" placeholder="请输入所属厂区" class="handle-input-address"></el-input>
                         </el-form-item>
-                    </el-col>
-                    <el-col :span="4">
+                    <!-- </el-col>
+                    <el-col :span="4"> -->
                         <el-form-item>
                             <el-button type="primary" icon="search" @click="search()">搜索</el-button>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="12">
+                    <el-col :span="24">
                         <el-form-item label="告警等级">
                         <el-select  v-model="select.grade" placeholder="请选择告警等级" class="handle-input-grade">
                             <el-option key="1" label="1" value="1"></el-option>
@@ -32,8 +32,8 @@
                             <el-option key="4" label="4" value="4"></el-option>
                         </el-select>
                         </el-form-item>
-                    </el-col>
-                    <el-col :span="20">
+                    <!-- </el-col>
+                    <el-col :span="24"> -->
                         <el-form-item label="检测时间">
                             <el-date-picker
                                 v-model="select.time"
@@ -48,7 +48,7 @@
                     <el-col :span="24"> 
                         <el-form-item>
                             <template>
-                                <el-button type="primary" icon="read" class="handle-read" @click="getData">导入数据</el-button>
+                                <el-button type="primary" icon="read" class="handle-read" @click="storeData">导出数据</el-button>
                                 <el-button type="primary" icon="delete" class="handle-del" @click="handleDeleteALL">批量删除</el-button>
                                 <el-button type="primary" icon="add" class="handle-add" @click="handleAdd">添加数据</el-button>
                             </template>
@@ -65,30 +65,31 @@
                 @selection-change="handleSelectionChange">
                 <!-- :default-sort = "{prop: 'num', order: 'ascending'}"> -->
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column label="序号" prop="num" type="integer" width="60">
+                <el-table-column label="序号" prop="num" type="integer" align="center" width="60">
                 </el-table-column>
-                <el-table-column prop="warning_id" label="告警编号" type="integer" width="150" show-overflow-tooltip>
+                <el-table-column prop="warning_id" label="告警编号" type="integer" align="center" width="150" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="device_id" label="设备id" type="integer" width="150" show-overflow-tooltip>
+                <el-table-column prop="device_id" label="设备id" type="integer" align="center" width="150" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="device_port" label="设备端口" width="150" show-overflow-tooltip>
+                <el-table-column prop="device_port" label="设备端口" width="150" align="center" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="device_address" label="所属厂区" width="150" show-overflow-tooltip>
+                <el-table-column prop="device_address" label="所属厂区" width="150" align="center" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="warning_time" label="告警时间"  width="150" show-overflow-tooltip>
+                <el-table-column prop="warning_time" label="告警时间"  width="150" align="center" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="warning_code" label="告警代码"  width="150" show-overflow-tooltip>
+                <el-table-column prop="warning_code" label="告警代码"  width="150" align="center" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="warning_grade" label="告警等级"  width="100" show-overflow-tooltip>
+                <el-table-column prop="warning_grade" label="告警等级"  width="100" align="center" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="180" align="center">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
+                        <!-- <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button> -->
                         <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
             
+            <!-- 分页管理 -->
             <div class="pagination">
                 <el-pagination
                 background
@@ -101,15 +102,6 @@
                 :total="allData.length">
                 </el-pagination>
             </div>
-
-            <!-- 分页管理 -->
-            <!-- <div class="pagination">
-                <el-pagination background @current-change="handleCurrentChange" 
-                    layout="prev, pager, next" 
-                    :pager-count="10"
-                    :total="this.page_num">
-                </el-pagination>
-            </div> -->
         </div>
 
         <!-- 添加弹出框 -->
@@ -152,11 +144,11 @@
         </el-dialog>
 
         <!-- 编辑弹出框 -->
-        <el-dialog title="编辑" :visible.sync="editVisible" width="40%">
+        <!-- <el-dialog title="编辑" :visible.sync="editVisible" width="40%">
             <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-                <!-- <el-form-item label="序号">
+                <el-form-item label="序号">
                     <el-input v-model="form.num" type="integer"></el-input>
-                </el-form-item> -->
+                </el-form-item>
                 <el-form-item label="告警编号">
                     <el-input v-model="form.warning_id" type="integer"></el-input>
                 </el-form-item>
@@ -188,28 +180,28 @@
                 <el-button @click="editVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
-        </el-dialog>
+        </el-dialog> -->
         
         <!-- 搜索弹出框 -->
         <el-dialog title="搜索结果" :visible.sync="searchVisible" width="60%">
             <el-table :data="searchRes">
-                <el-table-column label="页号" prop="page_idx" type="integer" width="60">
+                <!-- <el-table-column label="页号" prop="page_idx" type="integer" align="center" width="60">
                 </el-table-column>
                 <el-table-column label="序号" prop="num" type="integer" width="150">
+                </el-table-column> -->
+                <el-table-column label="告警编号" prop="warning_id" type="integer" width="150" align="center" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column label="告警编号" prop="warning_id" type="integer" width="150" show-overflow-tooltip>
+                <el-table-column prop="device_id" label="设备id" type="integer" width="150" align="center" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="device_id" label="设备id" type="integer" width="150" show-overflow-tooltip>
+                <el-table-column prop="device_port" label="设备端口" width="150" align="center" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="device_port" label="设备端口" width="150" show-overflow-tooltip>
+                <el-table-column prop="device_address" label="所属厂区" width="150" align="center" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="device_address" label="所属厂区" width="150" show-overflow-tooltip>
+                <el-table-column prop="warning_time" label="告警时间" width="150" align="center" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="warning_time" label="告警时间" width="150" show-overflow-tooltip>
+                <el-table-column prop="warning_code" label="告警代码" width="150" align="center" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="warning_code" label="告警代码" width="150" show-overflow-tooltip>
-                </el-table-column>
-                <el-table-column prop="warning_grade" label="告警等级" type="integer" width="150" show-overflow-tooltip>
+                <el-table-column prop="warning_grade" label="告警等级" type="integer" width="150" align="center" show-overflow-tooltip>
                 </el-table-column>
             </el-table>
         </el-dialog>
@@ -239,78 +231,11 @@
         name: 'DeviceList',
         data() {
             return {
-                url: '/public/vuetable.json',
+                get_url: 'admin/record/all',
+                search_url: 'admin/record/some',
+                insert_url: 'admin/record/insert',
+                delete_url: 'admin/record/delete',
                 allData: [
-                {
-                num:'1',
-                warning_id:'1',
-                device_id:'22',
-                device_port:'1254613',
-                device_address:'撒大大',
-                warning_time: '2022-12-5-12:05',
-                warning_code: 'sdasdas',
-                warning_grade: '2'
-                },
-                {
-                num:'3',
-                warning_id:'2',
-                device_id:'33',
-                device_port:'1254613',
-                device_address:'所属',
-                warning_time: '2022-12-5-12:05',
-                warning_code: 'sdasdas',
-                warning_grade: '2'
-                },
-                {
-                num:'2',
-                warning_id:'3',
-                device_id:'11',
-                device_port:'1254613',
-                device_address:'达到',
-                warning_time: '2022-12-5-12:05',
-                warning_code: 'sdasdas',
-                warning_grade: '2'
-                },
-                {
-                num:'5',
-                warning_id:'4',
-                device_id:'55',
-                device_port:'1254613',
-                device_address:'所属撒旦',
-                warning_time: '2022-12-5-12:05',
-                warning_code: 'sdasdas',
-                warning_grade: '2'
-                },
-                {
-                num:'4',
-                warning_id:'5',
-                device_id:'44',
-                device_port:'1254613',
-                device_address:'撒旦萨达撒',
-                warning_time: '2022-12-5-12:05',
-                warning_code: 'sdasdas',
-                warning_grade: '2'
-                },
-                {
-                num:'7',
-                warning_id:'6',
-                device_id:'77',
-                device_port:'1254613',
-                device_address:'撒旦撒旦所属',
-                warning_time: '2022-12-5-12:05',
-                warning_code: 'sdasdas',
-                warning_grade: '2'
-                },
-                {
-                num:'6',
-                warning_id:'7',
-                device_id:'66',
-                device_port:'1254613',
-                device_address:'撒大苏打大苏打是的',
-                warning_time: '2022-12-5-12:05',
-                warning_code: 'sdasdas',
-                warning_grade: '2'
-                }
                 ],
                 tableData: [
                 ],
@@ -321,7 +246,7 @@
                     id: '',
                     time: '',
                     address: '',
-                    frade: ''
+                    grade: ''
                 },
                 del_list: [],
                 is_search: false,
@@ -362,28 +287,47 @@
             this.getpageData();
             // console.log("tableData",this.tableData);
         },
-        computed: {
-            data() {
-                return this.tableData.filter((d) => {
-                    let is_del = false;
-                    for (let i = 0; i < this.del_list.length; i++) {//在删除的列表中寻找表项
-                        if (d.device_id === this.del_list[i].device_id) {
-                            is_del = true;
-                            break;
-                        }
-                    }
-                    if (!is_del) {//删除列表没找到需要的表项
-                        if (d.address.indexOf(this.select.id) > -1 &&
-                            (d.name.indexOf(this.select_address) > -1 ||
-                                d.address.indexOf(this.select_address) > -1)
-                        ) {
-                            return d;
-                        }
-                    }
-                })
-            }
-        },
+        // computed: {
+        //     data() {
+        //         return this.tableData.filter((d) => {
+        //             let is_del = false;
+        //             for (let i = 0; i < this.del_list.length; i++) {//在删除的列表中寻找表项
+        //                 if (d.device_id === this.del_list[i].device_id) {
+        //                     is_del = true;
+        //                     break;
+        //                 }
+        //             }
+        //             if (!is_del) {//删除列表没找到需要的表项
+        //                 if (d.address.indexOf(this.select.id) > -1 &&
+        //                     (d.name.indexOf(this.select_address) > -1 ||
+        //                         d.address.indexOf(this.select_address) > -1)
+        //                 ) {
+        //                     return d;
+        //                 }
+        //             }
+        //         })
+        //     }
+        // },
         methods: {
+            getData() {
+                this.$axios.get(this.get_url).then((res) => {
+                    console.log("res.data",res.data);
+                    console.log("res_len",res.data.length);
+                    let length = res.data.length;
+                    for(let i = 0; i < length; i++){
+                        // res.data[i].num = i + 1;
+                        this.allData.push(res.data[i]);
+                    }
+                    console.log("alldata:",this.allData);
+                    console.log("getData successfully");
+                    this.getpageData();
+                })
+            },
+            storeData(){
+                const data = JSON.stringify(this.allData); // 将数据转为 JSON 格式
+                const blob = new Blob([data], { type: 'application/json' }); // 创建一个 Blob 对象
+                saveAs(blob, 'data.json'); // 使用 file-saver 库将 Blob 对象保存为文件
+            },
             // 分页导航
             handleSizeChange(val){
                 this.page_size = val;
@@ -417,47 +361,63 @@
                     this.allData[i].num = i + 1;
                 }
             },
-            // 获取 easy-mock 的模拟数据
-            getData() {
-                // 开发环境使用 easy-mock 数据，正式环境使用 json 文件
-                // if (process.env.NODE_ENV === 'development') {
-                //     this.url = '/ms/table/list';
-                // };
-                // this.$axios.post(this.url).then((res) => {
-                //     this.allData = res.data.list;
-                //     console.log("tabledata:",this.allData);
-                // })
-                // this.sortData();
-                console.log("getData successfully");
-            },
-            search() {  //待修改
-                // console.log("select.id",this.select.id);
+            search() {
                 this.searchRes.splice(0,this.searchRes.length);
-                if(this.select.id){
-                    // let tmp = {
-                    //     page_idx: '',
-                    //     num:'',
-                    //     warning_id:'',
-                    //     device_id:'',
-                    //     device_port:'',
-                    //     device_address:'',
-                    //     warning_time: '',
-                    //     warning_code: '',
-                    //     warning_grade: ''
-                    // };
-                    this.searchRes = (this.allData.find((item)=>{
-                        if(item.device_id.indexOf(this.select.id) > -1) return item;}))
-                    // if(tmp){
-                    //     tmp.page_idx = Math.ceil(tmp.num / this.page_size);
-                    //     this.searchRes.push(tmp);
-                    // }
-                    console.log("Res",this.searchRes);
-                    this.select= {
+                if(this.select.id && this.select.time && this.select.address && this.select.grade){
+                    var year = this.select.time[0].getFullYear();
+                    var month = this.select.time[0].getMonth() + 1;
+                    var strDate = this.select.time[0].getDate();
+                    if (month >= 1 && month <= 9) {
+                        month = "0" + month;
+                    }
+                    if (strDate >= 0 && strDate <= 9) {
+                        strDate = "0" + strDate;
+                    }
+                    var currentdate = year + '/' + month + '/' + strDate;
+                    
+                    let begin = currentdate
+                                + '%20' 
+                                + this.select.time[0].toLocaleTimeString();
+                    begin = begin.substring(0, begin.length - 3);
+
+                    year = this.select.time[1].getFullYear();
+                    month = this.select.time[1].getMonth() + 1;
+                    strDate = this.select.time[1].getDate();
+                    if (month >= 1 && month <= 9) {
+                        month = "0" + month;
+                    }
+                    if (strDate >= 0 && strDate <= 9) {
+                        strDate = "0" + strDate;
+                    }
+                    currentdate = year + '/' + month + '/' + strDate;
+
+                    let end = currentdate
+                                + '%20' 
+                                + this.select.time[1].toLocaleTimeString();
+                    end = end.substring(0, end.length - 3);
+                    // console.log("begin",begin);
+                    // console.log("end",end);
+                    let url = this.search_url;
+                    url += `?device_id=${Number(this.select.id)}`;
+                    url += `&device_address=${this.select.address}`;
+                    url += `&warning_time_begin=${begin}`;
+                    url += `&warning_time_end=${end}`;
+                    url += `&warning_grade=${Number(this.select.grade)}`;
+                    // console.log("url",url);
+                    this.$axios.get(url).then((res) => {
+                        console.log("res",res);
+                        for(let i = 0; i < res.data.length; i++){
+                            res.data[i].warning_time = res.data[i].warning_time.substring(0, end.length - 2);
+                            this.searchRes.push(res.data[i]);
+                        }
+                        console.log("searchRes",this.searchRes);
+                    })
+                    this.select={
                         id: '',
                         time: '',
                         address: '',
-                        frade: ''
-                    };
+                        grade: ''
+                    }
                     this.searchVisible = true;
                 }
                 else{
@@ -523,7 +483,18 @@
                 const length = this.multipleSelection.length;
                 this.del_list = this.del_list.concat(this.multipleSelection);
                 for (let i = 0; i < length; i++) {
-                    this.allData = this.allData.filter((item) => item.device_id !== this.multipleSelection[i].device_id);
+                    var delete_id = Number(this.multipleSelection[i].warning_id);
+                    console.log("delete_id",delete_id);
+                    var url = this.delete_url;
+                    url += `?warning_id=${delete_id}`
+                    // console.log("url",url);
+                    this.$axios.delete(url).then((res) => {
+                            this.allData = this.allData.filter((item) => item.warning_id !== this.multipleSelection[i].warning_id);
+                            console.log("res",res);
+                        }).catch(error=>{
+                            console.log("error",error);
+                            alert("删除异常");
+                        });
                 }
                 this.getpageData();
                 if(this.tableData.length == 0){
@@ -537,25 +508,34 @@
             handleSelectionChange(val) {
                 this.multipleSelection = val;
             },
-            // 保存编辑
-            saveEdit() {
-                if(this.form.warning_id !=''
-                    && this.form.device_id !=''
-                    && this.form.device_port !=''
-                    && this.form.device_address !=''
-                    && this.form.warning_time !=''
-                    && this.form.warning_code !=''
-                    && this.form.warning_grade !=''){
+            // saveEdit() {
+            //     if(this.form.warning_id !=''
+            //         && this.form.device_id !=''
+            //         && this.form.device_port !=''
+            //         && this.form.device_address !=''
+            //         && this.form.warning_time !=''
+            //         && this.form.warning_code !=''
+            //         && this.form.warning_grade !=''){
 
-                    this.$set(this.allData, this.idx, this.form);//前端修改
-                    this.getpageData();
-                    // console.log("forms",this.form);
-                    this.editVisible = false;
-                    this.$message.success(`修改成功`);
-                }
-            },
+            //         this.$set(this.allData, this.idx, this.form);//前端修改
+            //         let formdata = new FormData();//后端插入
+            //         formdata.append("warning_id", Number(this.form.warning_id));
+            //         formdata.append("device_id", Number(this.form.device_id));
+            //         formdata.append("device_port", this.form.device_port);
+            //         formdata.append("device_address", this.form.device_address);
+            //         formdata.append("warning_time", this.form.warning_time);
+            //         formdata.append("warning_code", Number(this.form.warning_code));
+            //         formdata.append("warning_grade", Number(this.form.warning_grade));
+            //         this.$axios.post(this.insert_url,formdata).then((res) => {
+            //             console.log("res",res);
+            //         })
+            //         this.getpageData();
+            //         // console.log("forms",this.form);
+            //         this.editVisible = false;
+            //         this.$message.success(`修改成功`);
+            //     }
+            // },
             saveAdd() {
-                console.log("forms",this.form);
                 if(this.form.warning_id !=''
                     && this.form.device_id !=''
                     && this.form.device_port !=''
@@ -563,23 +543,61 @@
                     && this.form.warning_time !=''
                     && this.form.warning_code !=''
                     && this.form.warning_grade !=''){   
-                    this.form.num = this.allData.length + 1;
-                    this.allData.push(this.form);
-                    this.getpageData();
-                    this.addVisible = false;
-                    this.$message.success(`添加成功`);
+                    // this.form.num = this.allData.length + 1;
+                    let formdata = new FormData();//后端插入
+                    formdata.append("warning_id", Number(this.form.warning_id));
+                    formdata.append("device_id", Number(this.form.device_id));
+                    formdata.append("device_port", this.form.device_port);
+                    formdata.append("device_address", this.form.device_address);
+                    formdata.append("warning_time", this.form.warning_time);
+                    formdata.append("warning_code", Number(this.form.warning_code));
+                    formdata.append("warning_grade", Number(this.form.warning_grade));
+                    this.$axios.post(this.insert_url,formdata).then((res) => {
+                        console.log("res",res);
+                        this.allData.push(this.form);//前端插入
+                        this.getpageData();
+                        this.addVisible = false;
+                        this.$message.success(`添加成功`);
+                    }).catch(error=>{
+                            console.log("error",error);
+                            alert("插入异常");
+                        });
+                    this.multipleSelection = [];
                 }
             },
             // 确定删除
             deleteRow(){
-                this.allData = this.allData.filter((item) => item.device_id !== this.row.device_id);
-                this.getpageData();
-                if(this.tableData.length == 0){
-                    this.cur_page--;
-                    this.getpageData();
+                console.log("form",this.row);
+                var delete_id = Number(this.form.warning_id);
+                console.log("delete_id",delete_id);
+                var url = this.delete_url;
+                url += `?warning_id=${delete_id}`
+                console.log("url",url);
+                this.$axios.delete(url).then((res) => {//后端删除
+                        console.log("res",res);
+                        this.allData = this.allData.filter((item) => item.warning_id !== this.row.warning_id);//前端删除
+                        this.getpageData();
+                        if(this.tableData.length == 0){
+                            this.cur_page--;
+                            this.getpageData();
+                        }
+                        this.delVisible = false;
+                        this.$message.error(`删除成功`);
+                    }).catch(error=>{
+                            console.log("error",error);
+                            alert("删除异常");
+                        });
+                    this.multipleSelection = [];
+                    this.form = {
+                    num:'',
+                    warning_id:'',
+                    device_id:'',
+                    device_port:'',
+                    device_address:'',
+                    warning_time: '',
+                    warning_code: '',
+                    warning_grade: ''
                 }
-                this.delVisible = false;
-                this.$message.error(`删除成功`);
             }
         }
     }

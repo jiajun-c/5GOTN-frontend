@@ -1,16 +1,18 @@
 {
   "name": "5gotn",
   "version": "4.0.0",
+  "author": "ZZJ_U202015558 <1276814498@qq.com>",
   "private": true,
   "scripts": {
     "dev": "npm run serve",
-    "serve": "vue-cli-service serve",
+    "serve": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",
     "build": "vue-cli-service build"
   },
   "dependencies": {
     "axios": "^0.18.1",
     "babel-polyfill": "^6.26.0",
     "element-ui": "^2.4.11",
+    "file-saver": "^2.0.5",
     "mavon-editor": "^2.6.17",
     "vue": "^2.5.21",
     "vue-axios": "^3.5.2",
@@ -18,7 +20,8 @@
     "vue-quill-editor": "^3.0.6",
     "vue-router": "^3.0.1",
     "vue-schart": "^1.0.0",
-    "vuedraggable": "^2.17.0"
+    "vuedraggable": "^2.17.0",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.2.0",

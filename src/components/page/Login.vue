@@ -1,22 +1,21 @@
 <template>
     <div class="login-wrap">
-        <div class="ms-login">
-            <div class="ms-title">后台管理系统</div>
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="ms-content">
+        <div class="login-from">
+            <div class="login-title">5G-OTN管理系统登录页面</div>
+            <el-form :model="loginForm" :rules="rules" ref="loginForm" label-width="0px" class="content">
                 <el-form-item prop="username">
-                    <el-input v-model="ruleForm.username" placeholder="username">
+                    <el-input v-model="loginForm.username" placeholder="用户名">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input type="password" placeholder="password" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
+                    <el-input type="password" placeholder="密码" v-model="loginForm.password" @keyup.enter.native="submitForm('loginForm')">
                         <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
                     </el-input>
                 </el-form-item>
                 <div class="login-btn">
-                    <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
+                    <el-button type="primary" @click="submitForm('loginForm')">登录</el-button>
                 </div>
-                <p class="login-tips">Tips : 用户名和密码随便填。</p>
             </el-form>
         </div>
     </div>
@@ -24,11 +23,13 @@
 
 <script>
     export default {
+        name: 'login',
         data: function(){
             return {
-                ruleForm: {
-                    username: 'admin',
-                    password: '123123'
+                url: 'login',
+                loginForm: {
+                    username: '',
+                    password: ''
                 },
                 rules: {
                     username: [
@@ -44,8 +45,18 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        localStorage.setItem('ms_username',this.ruleForm.username);
-                        this.$router.push('/');
+                        // console.log("loginForm",this.loginForm);
+                        this.$axios.post(this.url,this.loginForm).then((res) => {
+                            console.log("res",res);
+                            localStorage.setItem('token',res.data.token);
+                            localStorage.setItem('expire',res.data.expire);
+                            localStorage.setItem('username',this.loginForm.username);
+                            this.$router.push('/');
+                        })
+                        .catch(error=>{
+                            console.log("error",error);
+                            alert("用户名或密码错误");
+                        })
                     } else {
                         console.log('error submit!!');
                         return false;
@@ -61,10 +72,10 @@
         position: relative;
         width:100%;
         height:100%;
-        background-image: url(../../assets/img/login-bg.jpg);
+        background-image: url(../../assets/img/loginbg.jpg);
         background-size: 100%;
     }
-    .ms-title{
+    .login-title{
         width:100%;
         line-height: 50px;
         text-align: center;
@@ -72,7 +83,7 @@
         color: #fff;
         border-bottom: 1px solid #ddd;
     }
-    .ms-login{
+    .login-from{
         position: absolute;
         left:50%;
         top:50%;
@@ -82,7 +93,7 @@
         background: rgba(255,255,255, 0.3);
         overflow: hidden;
     }
-    .ms-content{
+    .content{
         padding: 30px 30px;
     }
     .login-btn{
@@ -92,10 +103,5 @@
         width:100%;
         height:36px;
         margin-bottom: 10px;
-    }
-    .login-tips{
-        font-size:12px;
-        line-height:30px;
-        color:#fff;
     }
 </style>
